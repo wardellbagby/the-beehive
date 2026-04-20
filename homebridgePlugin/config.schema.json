@@ -1,0 +1,24 @@
+{
+  "pluginAlias": "BeehiveHomebridgePlugin",
+  "pluginType": "platform",
+  "singular": true,
+  "strictValidation": false,
+  "schema": {
+    "type": "object",
+    "required": ["name", "hostname"],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "Beehive"
+      },
+      "hostname": {
+        "title": "Beehive Service Hostname",
+        "type": "string",
+        "placeholder": "http://192.168.1.1:3000",
+        "description": "Base URL of the Beehive server (no trailing slash)"
+      }
+    }
+  }
+}
