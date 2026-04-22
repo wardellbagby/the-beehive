@@ -16,7 +16,7 @@ class MusicFilterRouteHandler(
 ) {
   fun getMusicFilterStatus(): MusicFilterStatusResponse {
     return MusicFilterStatusResponse(
-      isEnabled = manager.isEnabled,
+      isEnabled = jobManager.isStarted(MusicFilterJob.ID),
       bannedTracks = manager.bannedTracks.sortedByDescending { it.playedAt },
       nextEviction = manager.getNextEvictionTime(),
       maxPlaysAllowed = manager.maxPlaysAllowed,

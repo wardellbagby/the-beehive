@@ -13,6 +13,7 @@ import dev.zacsweers.metro.Provides
 import io.ktor.client.HttpClient
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalTime::class)
@@ -20,12 +21,15 @@ import kotlinx.serialization.json.Json
 interface AppGraph {
   val appPresenter: AppPresenter
   val clock: Clock
+  val timeZone: TimeZone
 
   @Provides fun json(): Json = createDefaultJson()
 
   @Provides fun httpClient(json: Json): HttpClient = createDefaultHttpClient(json)
 
   @Provides fun provideClock(): Clock = Clock.System
+
+  @Provides fun provideTimeZone(): TimeZone = TimeZone.currentSystemDefault()
 
   @Provides
   fun service(

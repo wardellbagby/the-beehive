@@ -20,6 +20,7 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlinx.datetime.TimeZone
 
 @OptIn(ExperimentalTime::class)
 @Composable
@@ -28,7 +29,10 @@ fun App() {
   AppTheme {
     val appGraph = remember { createGraph<AppGraph>() }
 
-    CompositionLocalProvider(LocalClock provides appGraph.clock) {
+    CompositionLocalProvider(
+      LocalClock provides appGraph.clock,
+      LocalTimeZone provides appGraph.timeZone,
+    ) {
       val snackbarHostState = remember { SnackbarHostState() }
       // CompositionLocals that should be shared between both the normal Compose UI and the Molecule
       // Presenters.
@@ -53,6 +57,7 @@ val LocalSnackbarHost =
 
 @OptIn(ExperimentalTime::class)
 val LocalClock = staticCompositionLocalOf<Clock> { error("No Clock provided!") }
+val LocalTimeZone = staticCompositionLocalOf<TimeZone> { error("No TimeZone provided!") }
 
 @Composable
 private fun UiStack.Show() {

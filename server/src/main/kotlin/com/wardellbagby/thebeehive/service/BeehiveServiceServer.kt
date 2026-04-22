@@ -10,10 +10,12 @@ import com.wardellbagby.thebeehive.notifications.RegisterTokenRequest
 import com.wardellbagby.thebeehive.prompt.PromptReply
 import com.wardellbagby.thebeehive.status.BeehiveStatusResponse
 import com.wardellbagby.thebeehive.status.BeehiveStatusRouteHandler
+import com.wardellbagby.thebeehive.status.LogMessage
 import com.wardellbagby.thebeehive.status.ToggleJobRequest
 import com.wardellbagby.thebeehive.status.ToggleJobResponse
 import dev.zacsweers.metro.Inject
 import kotlin.uuid.ExperimentalUuidApi
+import kotlinx.coroutines.flow.Flow
 
 @Inject
 class BeehiveServiceServer(
@@ -22,6 +24,7 @@ class BeehiveServiceServer(
   private val notificationRouteHandler: NotificationRouteHandler,
   private val prompter: MobileResponsePrompter,
   private val jobManager: JobManager,
+  private val logs: Flow<LogMessage>,
 ) : BeehiveService {
   override suspend fun musicFilterStatus(): NetworkResponse<MusicFilterStatusResponse> {
     return NetworkResponse { musicFilterRouteHandler.getMusicFilterStatus() }
@@ -63,5 +66,9 @@ class BeehiveServiceServer(
     return NetworkResponse {
       prompter.onPromptResponse(promptId = reply.promptId, response = reply.response)
     }
+  }
+
+  override fun logs(): Flow<LogMessage> {
+    return logs
   }
 }

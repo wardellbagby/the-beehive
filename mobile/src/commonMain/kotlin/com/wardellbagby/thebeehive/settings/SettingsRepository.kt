@@ -24,9 +24,7 @@ class SettingsRepository @Inject constructor() {
   }
 
   fun settings(): Settings =
-      Settings(
-          hostname = store.getStringOrNull(HOSTNAME_KEY) ?: error("Hostname has not been set!")
-      )
+    Settings(hostname = store.getStringOrNull(HOSTNAME_KEY) ?: error("Hostname has not been set!"))
 
   fun setRequiredSettings(hostname: String) {
     store.putString("hostname", hostname)

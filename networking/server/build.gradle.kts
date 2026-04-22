@@ -16,10 +16,15 @@ kotlin {
       dependencies {
         api(projects.networking.core)
         api(libs.ktor.server.core)
-        api(libs.ktor.server.websockets)
       }
     }
-    jvmMain { kotlin.srcDir("${projectDir}/build/generated/ksp/jvm/jvmMain/kotlin") }
+    jvmMain {
+      dependencies {
+        api(libs.ktor.server.websockets)
+        implementation(libs.kotlinx.serialization.json)
+      }
+      kotlin.srcDir("${projectDir}/build/generated/ksp/jvm/jvmMain/kotlin")
+    }
   }
 }
 

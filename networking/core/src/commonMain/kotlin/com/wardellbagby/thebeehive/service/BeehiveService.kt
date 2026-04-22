@@ -9,9 +9,12 @@ import com.wardellbagby.thebeehive.service.annotations.Body
 import com.wardellbagby.thebeehive.service.annotations.GET
 import com.wardellbagby.thebeehive.service.annotations.NetworkService
 import com.wardellbagby.thebeehive.service.annotations.POST
+import com.wardellbagby.thebeehive.service.annotations.WS
 import com.wardellbagby.thebeehive.status.BeehiveStatusResponse
+import com.wardellbagby.thebeehive.status.LogMessage
 import com.wardellbagby.thebeehive.status.ToggleJobRequest
 import com.wardellbagby.thebeehive.status.ToggleJobResponse
+import kotlinx.coroutines.flow.Flow
 
 @NetworkService
 interface BeehiveService {
@@ -35,4 +38,6 @@ interface BeehiveService {
   suspend fun registerToken(@Body request: RegisterTokenRequest): EmptyResponse
 
   @POST("/api/prompt-response") suspend fun promptResponse(@Body reply: PromptReply): EmptyResponse
+
+  @WS("/api/logs") fun logs(): Flow<LogMessage>
 }

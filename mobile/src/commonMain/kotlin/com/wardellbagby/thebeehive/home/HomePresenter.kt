@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.wardellbagby.thebeehive.logs.LogsPresenter
 import com.wardellbagby.thebeehive.musicfilter.MusicFilterPresenter
 import com.wardellbagby.thebeehive.navigation.BasicScreenPresenter
 import com.wardellbagby.thebeehive.navigation.UiStack
@@ -21,6 +22,7 @@ class HomePresenter
 @Inject
 constructor(
   private val musicFilterPresenter: MusicFilterPresenter,
+  private val logsPresenter: LogsPresenter,
   private val service: BeehiveServiceClient,
   private val tokenProvider: FcmTokenProvider,
 ) : BasicScreenPresenter<UiStack>() {
@@ -29,6 +31,8 @@ constructor(
     data object Home : State
 
     data object MusicFilter : State
+
+    data object Logs : State
   }
 
   @Composable
@@ -39,7 +43,12 @@ constructor(
 
     var state by remember { mutableStateOf<State>(State.Home) }
 
-    val body = HomeScreen(onMusicFilterClicked = { state = State.MusicFilter }).asBackStackScreen()
+    val body =
+      HomeScreen(
+          onMusicFilterClicked = { state = State.MusicFilter },
+          onLogsClicked = { state = State.Logs },
+        )
+        .asBackStackScreen()
 
     return when (state) {
       State.Home -> UiStack(body)
@@ -50,6 +59,13 @@ constructor(
               MusicFilterPresenter.Output.Exited -> {
                 state = State.Home
               }
+            }
+          }
+      State.Logs ->
+        body atBottomOf
+          logsPresenter.render { output ->
+            when (output) {
+              LogsPresenter.Output.Exited -> state = State.Home
             }
           }
     }

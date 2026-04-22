@@ -26,10 +26,10 @@ import kotlinx.coroutines.delay
 class AppPresenter
 @Inject
 constructor(
-    private val homePresenter: HomePresenter,
-    private val initialLaunchPresenter: InitialLaunchPresenter,
-    private val settingsRepository: SettingsRepository,
-    private val serviceProvider: Provider<BeehiveServiceClient>,
+  private val homePresenter: Provider<HomePresenter>,
+  private val initialLaunchPresenter: InitialLaunchPresenter,
+  private val settingsRepository: SettingsRepository,
+  private val serviceProvider: Provider<BeehiveServiceClient>,
 ) : BasicScreenPresenter<UiStack>() {
   sealed interface State {
     data object InitialLaunch : State
@@ -41,11 +41,11 @@ constructor(
   override fun present(): UiStack {
     var state by remember {
       mutableStateOf(
-          if (settingsRepository.hasAllRequiredSettings()) {
-            State.Home
-          } else {
-            State.InitialLaunch
-          }
+        if (settingsRepository.hasAllRequiredSettings()) {
+          State.Home
+        } else {
+          State.InitialLaunch
+        }
       )
     }
     val snackbarHost = LocalSnackbarHost.current
@@ -56,11 +56,11 @@ constructor(
         do {
           service.beehiveStatus().onFailure {
             val result =
-                snackbarHost.showSnackbar(
-                    message = "Failed to connect to server",
-                    actionLabel = "Logout?",
-                    withDismissAction = true,
-                )
+              snackbarHost.showSnackbar(
+                message = "Failed to connect to server",
+                actionLabel = "Logout?",
+                withDismissAction = true,
+              )
             when (result) {
               SnackbarResult.ActionPerformed -> {
                 settingsRepository.clearAllRequiredSettings()
@@ -77,16 +77,16 @@ constructor(
     }
 
     return when (state) {
-      State.Home -> homePresenter.render()
+      State.Home -> homePresenter().render()
       State.InitialLaunch ->
-          initialLaunchPresenter.render { output ->
-            when (output) {
-              is InitialLaunchPresenter.Output.Finished -> {
-                settingsRepository.setRequiredSettings(hostname = output.hostname)
-                state = State.Home
-              }
+        initialLaunchPresenter.render { output ->
+          when (output) {
+            is InitialLaunchPresenter.Output.Finished -> {
+              settingsRepository.setRequiredSettings(hostname = output.hostname)
+              state = State.Home
             }
           }
+        }
     }
   }
 }

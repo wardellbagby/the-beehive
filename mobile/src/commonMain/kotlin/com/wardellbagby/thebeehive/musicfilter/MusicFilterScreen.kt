@@ -207,7 +207,7 @@ private fun MusicFilterHeader(nextEviction: Instant?, trackCount: Int, maxPlaysA
     nextEviction?.let {
       val evictionTime = (LocalClock.current.now() - it)
       val formattedEvictionTime =
-        if (evictionTime.isNegative()) {
+        if (!evictionTime.isNegative()) {
           "On next track play"
         } else {
           evictionTime.format()

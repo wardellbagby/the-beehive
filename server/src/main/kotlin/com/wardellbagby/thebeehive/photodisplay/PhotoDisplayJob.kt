@@ -36,9 +36,9 @@ private val IMAGE_DISPLAY_DURATION = 20.seconds
 @ContributesIntoSet(AppScope::class)
 @Inject
 class PhotoDisplayJob(
-    filesystem: Filesystem,
-    private val apiFactory: TuneshineApi.Factory,
-    private val clock: Clock,
+  filesystem: Filesystem,
+  private val apiFactory: TuneshineApi.Factory,
+  private val clock: Clock,
 ) : Job {
   override val id: JobId = ID
 
@@ -50,25 +50,23 @@ class PhotoDisplayJob(
 
     while (true) {
       forResult {
-            api.deleteImage()
+          val state = api.getState()
+          if (state.remoteMetadata?.idle == true) {
+            val shownAt = state.localMetadata?.itemId?.let { Instant.parse(it) }
+            val expired = shownAt == null || (clock.now() - shownAt) > IMAGE_DISPLAY_DURATION
 
-            val state = api.getState()
-            if (state.remoteMetadata?.idle == true) {
-              val shownAt = state.localMetadata?.itemId?.let { Instant.parse(it) }
-              val expired = shownAt == null || (clock.now() - shownAt) > IMAGE_DISPLAY_DURATION
-
-              if (expired) {
-                val imageBytes = randomImage()
-                api.postImageFile(
-                    imageBytes,
-                    ImageMetadata(itemId = clock.now().toString(), idle = true),
-                )
-              }
-            } else {
-              api.deleteImage()
+            if (expired) {
+              val imageBytes = randomImage()
+              api.postImageFile(
+                imageBytes,
+                ImageMetadata(itemId = clock.now().toString(), idle = true),
+              )
             }
+          } else {
+            api.deleteImage()
           }
-          .onFailure { logger.warn("Error when updating photo display", it) }
+        }
+        .onFailure { logger.warn("Error when updating photo display", it) }
       delay(2_000)
     }
   }
@@ -86,48 +84,48 @@ class PhotoDisplayJob(
   }
 
   private suspend fun discoverTuneshine(): String? =
-      withContext(Dispatchers.IO) { NetworkInterface.networkInterfaces() }
-          .asSequence()
-          .filter { it.isUp && it.supportsMulticast() && !it.isLoopback }
-          .flatMap { it.inetAddresses.asSequence() }
-          .distinct()
-          .toList()
-          .reversed() // It's often the last one anecdotally so let's just start there.
-          .firstNotNullOfOrNull { discoverTuneshine(bindAddress = it) }
+    withContext(Dispatchers.IO) { NetworkInterface.networkInterfaces() }
+      .asSequence()
+      .filter { it.isUp && it.supportsMulticast() && !it.isLoopback }
+      .flatMap { it.inetAddresses.asSequence() }
+      .distinct()
+      .toList()
+      .reversed() // It's often the last one anecdotally so let's just start there.
+      .firstNotNullOfOrNull { discoverTuneshine(bindAddress = it) }
 
   private suspend fun discoverTuneshine(bindAddress: InetAddress): String? =
-      withTimeoutOrNull(10_000L) {
-            withContext(Dispatchers.IO) {
-              suspendCancellableCoroutine { cont ->
-                val jmdns = JmDNS.create(bindAddress)
-                logger.debug("Using interface address {}", jmdns.inetAddress)
-                jmdns.addServiceListener(
-                    TUNESHINE_SERVICE,
-                    object : ServiceListener {
-                      override fun serviceAdded(event: ServiceEvent) {
-                        jmdns.requestServiceInfo(event.type, event.name)
-                      }
+    withTimeoutOrNull(10_000L) {
+        withContext(Dispatchers.IO) {
+          suspendCancellableCoroutine { cont ->
+            val jmdns = JmDNS.create(bindAddress)
+            logger.debug("Using interface address {}", jmdns.inetAddress)
+            jmdns.addServiceListener(
+              TUNESHINE_SERVICE,
+              object : ServiceListener {
+                override fun serviceAdded(event: ServiceEvent) {
+                  jmdns.requestServiceInfo(event.type, event.name)
+                }
 
-                      override fun serviceRemoved(event: ServiceEvent) {}
+                override fun serviceRemoved(event: ServiceEvent) {}
 
-                      override fun serviceResolved(event: ServiceEvent) {
-                        val ip = event.info.inetAddresses.firstOrNull()?.hostAddress
-                        if (ip != null && cont.isActive) {
-                          finallyIgnoringAll { jmdns.close() }
-                          cont.resumeWith(Result.success(ip))
-                        }
-                      }
-                    },
-                )
-                cont.invokeOnCancellation { finallyIgnoringAll { jmdns.close() } }
-              }
-            }
+                override fun serviceResolved(event: ServiceEvent) {
+                  val ip = event.info.inetAddresses.firstOrNull()?.hostAddress
+                  if (ip != null && cont.isActive) {
+                    finallyIgnoringAll { jmdns.close() }
+                    cont.resumeWith(Result.success(ip))
+                  }
+                }
+              },
+            )
+            cont.invokeOnCancellation { finallyIgnoringAll { jmdns.close() } }
           }
-          .also {
-            if (it == null) {
-              logger.debug("Tuneshine not found using bind address {}", bindAddress)
-            }
-          }
+        }
+      }
+      .also {
+        if (it == null) {
+          logger.debug("Tuneshine not found using bind address {}", bindAddress)
+        }
+      }
 
   private fun randomImage(): ByteArray {
     val files = imagesDirectory.listDirectoryEntries()

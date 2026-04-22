@@ -2,15 +2,16 @@ package com.wardellbagby.thebeehive
 
 import com.wardellbagby.thebeehive.status.JobId
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlin.collections.forEach
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job as CoroutineJob
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
 @SingleIn(AppScope::class)
+@Inject
 class JobManager(private val jobs: Set<Job>, private val scope: CoroutineScope) {
   private val jobErrors = mutableMapOf<JobId, String?>()
   private val activeCoroutineJobs = mutableMapOf<JobId, CoroutineJob>()

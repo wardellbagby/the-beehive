@@ -17,6 +17,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,16 +33,24 @@ import com.wardellbagby.thebeehive.navigation.ComposeScreen
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Music
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import thebeehiveapp.mobile.generated.resources.Res
 import thebeehiveapp.mobile.generated.resources.app_name
+import thebeehiveapp.mobile.generated.resources.ic_logs
 
-class HomeScreen(val onMusicFilterClicked: () -> Unit) : ComposeScreen {
+class HomeScreen(val onMusicFilterClicked: () -> Unit, val onLogsClicked: () -> Unit) :
+  ComposeScreen {
   @OptIn(ExperimentalMaterial3Api::class)
   @Composable
   override fun Content() {
     Scaffold(
-      topBar = { CenterAlignedTopAppBar(title = { Text(stringResource(Res.string.app_name)) }) }
+      topBar = { CenterAlignedTopAppBar(title = { Text(stringResource(Res.string.app_name)) }) },
+      floatingActionButton = {
+        FloatingActionButton(onClick = onLogsClicked) {
+          Icon(painterResource(Res.drawable.ic_logs), contentDescription = "Logs")
+        }
+      },
     ) { paddingValues ->
       LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -86,5 +95,5 @@ private fun LargeButton(label: String, icon: ImageVector, onClick: () -> Unit) {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-  HomeScreen({}).Content()
+  HomeScreen(onMusicFilterClicked = {}, onLogsClicked = {}).Content()
 }
