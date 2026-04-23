@@ -7,6 +7,9 @@ import com.wardellbagby.thebeehive.musicfilter.data.MusicFilterStatusResponse
 import com.wardellbagby.thebeehive.musicfilter.data.UpdateMusicFilterSettingsRequest
 import com.wardellbagby.thebeehive.notifications.NotificationRouteHandler
 import com.wardellbagby.thebeehive.notifications.RegisterTokenRequest
+import com.wardellbagby.thebeehive.photodisplay.PhotoDisplayNavigateRequest
+import com.wardellbagby.thebeehive.photodisplay.PhotoDisplayRouteHandler
+import com.wardellbagby.thebeehive.photodisplay.PhotoDisplayStatusResponse
 import com.wardellbagby.thebeehive.prompt.PromptReply
 import com.wardellbagby.thebeehive.status.BeehiveStatusResponse
 import com.wardellbagby.thebeehive.status.BeehiveStatusRouteHandler
@@ -22,6 +25,7 @@ class BeehiveServiceServer(
   private val musicFilterRouteHandler: MusicFilterRouteHandler,
   private val beehiveStatusRouteHandler: BeehiveStatusRouteHandler,
   private val notificationRouteHandler: NotificationRouteHandler,
+  private val photoDisplayRouteHandler: PhotoDisplayRouteHandler,
   private val prompter: MobileResponsePrompter,
   private val jobManager: JobManager,
   private val logs: Flow<LogMessage>,
@@ -51,6 +55,18 @@ class BeehiveServiceServer(
 
   override suspend fun deletePlay(request: DeletePlayRequest): EmptyResponse {
     return NetworkResponse { musicFilterRouteHandler.deletePlay(request) }
+  }
+
+  override suspend fun photoDisplayStatus(): NetworkResponse<PhotoDisplayStatusResponse> {
+    return NetworkResponse { photoDisplayRouteHandler.getStatus() }
+  }
+
+  override fun updatePhotoDisplay(): Flow<LogMessage> {
+    return photoDisplayRouteHandler.updatePhotoDisplay()
+  }
+
+  override suspend fun navigatePhotoDisplay(request: PhotoDisplayNavigateRequest): EmptyResponse {
+    return NetworkResponse { photoDisplayRouteHandler.navigate(request.forward) }
   }
 
   override suspend fun registerToken(request: RegisterTokenRequest): EmptyResponse {

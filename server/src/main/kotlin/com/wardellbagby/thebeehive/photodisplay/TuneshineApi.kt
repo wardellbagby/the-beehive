@@ -13,7 +13,6 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable
@@ -54,13 +53,12 @@ data class DeviceState(
 
 @Serializable data class BrightnessRequest(val active: Int? = null, val idle: Int? = null)
 
-private val json = Json { ignoreUnknownKeys = true }
-
-class TuneshineApi private constructor(private val client: HttpClient, host: String) {
+class TuneshineApi
+private constructor(private val client: HttpClient, private val json: Json, host: String) {
 
   @Inject
-  class Factory(private val client: HttpClient) {
-    fun create(host: String): TuneshineApi = TuneshineApi(client, host)
+  class Factory(private val client: HttpClient, private val json: Json) {
+    fun create(host: String): TuneshineApi = TuneshineApi(client, json, host)
   }
 
   private val baseUrl = "http://$host"

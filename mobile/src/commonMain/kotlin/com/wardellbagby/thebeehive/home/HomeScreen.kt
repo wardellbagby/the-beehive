@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.wardellbagby.thebeehive.navigation.ComposeScreen
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Image
 import compose.icons.fontawesomeicons.solid.Music
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -39,7 +40,11 @@ import thebeehiveapp.mobile.generated.resources.Res
 import thebeehiveapp.mobile.generated.resources.app_name
 import thebeehiveapp.mobile.generated.resources.ic_logs
 
-class HomeScreen(val onMusicFilterClicked: () -> Unit, val onLogsClicked: () -> Unit) :
+class HomeScreen(
+  val onMusicFilterClicked: () -> Unit,
+  val onLogsClicked: () -> Unit,
+  val onPhotoDisplayClicked: () -> Unit,
+) :
   ComposeScreen {
   @OptIn(ExperimentalMaterial3Api::class)
   @Composable
@@ -62,6 +67,13 @@ class HomeScreen(val onMusicFilterClicked: () -> Unit, val onLogsClicked: () -> 
             label = "Music Filter",
             icon = FontAwesomeIcons.Solid.Music,
             onClick = onMusicFilterClicked,
+          )
+        }
+        item {
+          LargeButton(
+            label = "Photo Display",
+            icon = FontAwesomeIcons.Solid.Image,
+            onClick = onPhotoDisplayClicked,
           )
         }
       }
@@ -95,5 +107,5 @@ private fun LargeButton(label: String, icon: ImageVector, onClick: () -> Unit) {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-  HomeScreen(onMusicFilterClicked = {}, onLogsClicked = {}).Content()
+  HomeScreen(onMusicFilterClicked = {}, onLogsClicked = {}, onPhotoDisplayClicked = {}).Content()
 }

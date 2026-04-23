@@ -35,6 +35,7 @@ dependencies {
   implementation(libs.ktor.server.websockets)
   implementation(libs.ktor.serializationKotlinxJson)
   implementation(libs.ktor.clientLogging)
+  implementation(libs.kotlinx.datetime)
   implementation(libs.firebase.admin)
   implementation(libs.jmdns)
   implementation(libs.kotlin.process)

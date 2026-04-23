@@ -30,6 +30,7 @@ kotlin {
     androidMain {
       dependencies {
         implementation(project.dependencies.platform(libs.firebase.bom))
+        implementation(libs.coil3.gif)
 
         implementation(libs.androidx.activity.compose)
         implementation(libs.kotlinx.coroutines.play.services)

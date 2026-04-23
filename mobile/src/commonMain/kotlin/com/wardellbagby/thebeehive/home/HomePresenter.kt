@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.wardellbagby.thebeehive.logs.LogsPresenter
 import com.wardellbagby.thebeehive.musicfilter.MusicFilterPresenter
+import com.wardellbagby.thebeehive.photodisplay.PhotoDisplayPresenter
 import com.wardellbagby.thebeehive.navigation.BasicScreenPresenter
 import com.wardellbagby.thebeehive.navigation.UiStack
 import com.wardellbagby.thebeehive.navigation.asBackStackScreen
@@ -23,6 +24,7 @@ class HomePresenter
 constructor(
   private val musicFilterPresenter: MusicFilterPresenter,
   private val logsPresenter: LogsPresenter,
+  private val photoDisplayPresenter: PhotoDisplayPresenter,
   private val service: BeehiveServiceClient,
   private val tokenProvider: FcmTokenProvider,
 ) : BasicScreenPresenter<UiStack>() {
@@ -33,6 +35,8 @@ constructor(
     data object MusicFilter : State
 
     data object Logs : State
+
+    data object PhotoDisplay : State
   }
 
   @Composable
@@ -47,6 +51,7 @@ constructor(
       HomeScreen(
           onMusicFilterClicked = { state = State.MusicFilter },
           onLogsClicked = { state = State.Logs },
+          onPhotoDisplayClicked = { state = State.PhotoDisplay },
         )
         .asBackStackScreen()
 
@@ -66,6 +71,13 @@ constructor(
           logsPresenter.render { output ->
             when (output) {
               LogsPresenter.Output.Exited -> state = State.Home
+            }
+          }
+      State.PhotoDisplay ->
+        body atBottomOf
+          photoDisplayPresenter.render { output ->
+            when (output) {
+              PhotoDisplayPresenter.Output.Exited -> state = State.Home
             }
           }
     }

@@ -5,6 +5,5 @@ data class ServerConfig(
   val spotifyClientId: String,
   val spotifyClientSecret: String,
   val spotifyRedirectUri: String,
-  val firebaseServiceAccountKeyPath: String,
-  val icloudUsername: String,
+  val firebaseServiceAccountKeyPath: String
 )
