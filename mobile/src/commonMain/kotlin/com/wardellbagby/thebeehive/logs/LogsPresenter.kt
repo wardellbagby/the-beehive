@@ -12,6 +12,8 @@ import com.wardellbagby.thebeehive.navigation.ScreenPresenter
 import com.wardellbagby.thebeehive.navigation.UiStack
 import com.wardellbagby.thebeehive.navigation.asBackStackScreen
 import com.wardellbagby.thebeehive.service.BeehiveService
+import com.wardellbagby.thebeehive.service.onFailure
+import com.wardellbagby.thebeehive.service.onSuccess
 import com.wardellbagby.thebeehive.status.LogMessage
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.onCompletion
@@ -36,7 +38,10 @@ class LogsPresenter @Inject constructor(private val service: BeehiveService) :
     }
 
     LaunchedEffect(Unit) {
-      service.logs().onCompletion { isFinished = true }.collect { logs.add(it) }
+      service
+        .logs()
+        .onSuccess { flow -> flow.onCompletion { isFinished = true }.collect { logs.add(it) } }
+        .onFailure { isFinished = true }
     }
 
     return UiStack(

@@ -11,6 +11,8 @@ import com.wardellbagby.thebeehive.navigation.ComposeOverlay
 import com.wardellbagby.thebeehive.navigation.FullModalOverlay
 import com.wardellbagby.thebeehive.navigation.ScreenPresenter
 import com.wardellbagby.thebeehive.service.BeehiveService
+import com.wardellbagby.thebeehive.service.onFailure
+import com.wardellbagby.thebeehive.service.onSuccess
 import com.wardellbagby.thebeehive.status.LogMessage
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.onCompletion
@@ -28,7 +30,10 @@ class UpdatePhotosPresenter @Inject constructor(private val service: BeehiveServ
     var isFinished by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-      service.updatePhotoDisplay().onCompletion { isFinished = true }.collect { logs.add(it) }
+      service
+        .updatePhotoDisplay()
+        .onSuccess { flow -> flow.onCompletion { isFinished = true }.collect { logs.add(it) } }
+        .onFailure { isFinished = true }
     }
 
     return FullModalOverlay(

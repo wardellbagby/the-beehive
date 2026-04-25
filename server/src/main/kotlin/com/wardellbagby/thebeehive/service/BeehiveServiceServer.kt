@@ -61,8 +61,8 @@ class BeehiveServiceServer(
     return NetworkResponse { photoDisplayRouteHandler.getStatus() }
   }
 
-  override fun updatePhotoDisplay(): Flow<LogMessage> {
-    return photoDisplayRouteHandler.updatePhotoDisplay()
+  override suspend fun updatePhotoDisplay(): NetworkResponse<Flow<LogMessage>> {
+    return NetworkResponse.Successful(photoDisplayRouteHandler.updatePhotoDisplay())
   }
 
   override suspend fun navigatePhotoDisplay(request: PhotoDisplayNavigateRequest): EmptyResponse {
@@ -84,7 +84,7 @@ class BeehiveServiceServer(
     }
   }
 
-  override fun logs(): Flow<LogMessage> {
-    return logs
+  override suspend fun logs(): NetworkResponse<Flow<LogMessage>> {
+    return NetworkResponse.Successful(logs)
   }
 }

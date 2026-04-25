@@ -39,7 +39,8 @@ interface BeehiveService {
   @GET("/api/photo-display")
   suspend fun photoDisplayStatus(): NetworkResponse<PhotoDisplayStatusResponse>
 
-  @WS("/api/photo-display/update") fun updatePhotoDisplay(): Flow<LogMessage>
+  @WS("/api/photo-display/update")
+  suspend fun updatePhotoDisplay(): NetworkResponse<Flow<LogMessage>>
 
   @POST("/api/photo-display/navigate")
   suspend fun navigatePhotoDisplay(@Body request: PhotoDisplayNavigateRequest): EmptyResponse
@@ -49,5 +50,5 @@ interface BeehiveService {
 
   @POST("/api/prompt-response") suspend fun promptResponse(@Body reply: PromptReply): EmptyResponse
 
-  @WS("/api/logs") fun logs(): Flow<LogMessage>
+  @WS("/api/logs") suspend fun logs(): NetworkResponse<Flow<LogMessage>>
 }

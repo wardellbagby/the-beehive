@@ -6,9 +6,9 @@ import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 
-inline fun <T : Any> tryCatchingNetworkError(
-  block: () -> HttpResponse,
-  successMapper: (HttpResponse) -> NetworkResponse.Successful<T>,
+inline fun <T : Any, R : Any> tryCatchingNetworkError(
+  block: () -> R,
+  successMapper: (R) -> NetworkResponse.Successful<T>,
 ): NetworkResponse<T> {
   return try {
     successMapper(block())
@@ -21,12 +21,16 @@ inline fun <T : Any> tryCatchingNetworkError(
   }
 }
 
-suspend inline fun <reified T : Any> performNetworkCall(
+suspend inline fun <reified T : Any> performHttpCall(
   block: () -> HttpResponse
 ): NetworkResponse<T> {
   return tryCatchingNetworkError(block) { NetworkResponse.Successful(it.body()) }
 }
 
-inline fun performNetworkCall(block: () -> HttpResponse): EmptyResponse {
+inline fun performHttpCall(block: () -> HttpResponse): EmptyResponse {
   return tryCatchingNetworkError(block) { NetworkResponse.Successful(Unit) }
+}
+
+inline fun <T : Any> initializeWebsocketConnection(block: () -> T): NetworkResponse<T> {
+  return tryCatchingNetworkError(block) { NetworkResponse.Successful(it) }
 }
