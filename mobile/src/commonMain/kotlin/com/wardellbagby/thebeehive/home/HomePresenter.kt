@@ -8,7 +8,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.wardellbagby.thebeehive.logs.LogsPresenter
 import com.wardellbagby.thebeehive.musicfilter.MusicFilterPresenter
-import com.wardellbagby.thebeehive.photodisplay.PhotoDisplayPresenter
 import com.wardellbagby.thebeehive.navigation.BasicScreenPresenter
 import com.wardellbagby.thebeehive.navigation.UiStack
 import com.wardellbagby.thebeehive.navigation.asBackStackScreen
@@ -16,6 +15,7 @@ import com.wardellbagby.thebeehive.navigation.atBottomOf
 import com.wardellbagby.thebeehive.navigation.render
 import com.wardellbagby.thebeehive.notifications.FcmTokenProvider
 import com.wardellbagby.thebeehive.notifications.RegisterTokenRequest
+import com.wardellbagby.thebeehive.photodisplay.PhotoDisplayPresenter
 import com.wardellbagby.thebeehive.service.BeehiveServiceClient
 import dev.zacsweers.metro.Inject
 

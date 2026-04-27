@@ -83,9 +83,8 @@ fun FilteredLogList(
   }
 
   LaunchedEffect(Unit) {
-    snapshotFlow { listState.canScrollForward }.collect { canScrollForward ->
-      if (canScrollForward && stickToBottom) stickToBottom = false
-    }
+    snapshotFlow { listState.canScrollForward }
+      .collect { canScrollForward -> if (canScrollForward && stickToBottom) stickToBottom = false }
   }
   val textMeasurer = rememberTextMeasurer()
   val longestLine =

@@ -22,3 +22,7 @@ subprojects {
   apply(plugin = "com.ncorti.ktfmt.gradle")
   configure<KtfmtExtension> { googleStyle() }
 }
+
+tasks.register<Exec>("configureGitHooks") {
+  commandLine("git", "config", "core.hooksPath", ".githooks")
+}

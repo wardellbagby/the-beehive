@@ -66,8 +66,7 @@ private val ROUTING_FN = MemberName("io.ktor.server.routing", "routing")
 private val INSTALL_FN = MemberName("io.ktor.server.application", "install")
 private val FLOW_FN = MemberName("kotlinx.coroutines.flow", "flow")
 private val FRAME_READ_TEXT = MemberName("io.ktor.websocket", "readText")
-private val PERFORM_HTTP_CALL =
-  MemberName("com.wardellbagby.thebeehive.service", "performHttpCall")
+private val PERFORM_HTTP_CALL = MemberName("com.wardellbagby.thebeehive.service", "performHttpCall")
 private val INITIALIZE_WEBSOCKET_CONNECTION =
   MemberName("com.wardellbagby.thebeehive.service", "initializeWebsocketConnection")
 private val SEND_NETWORK_RESPONSE =
@@ -209,10 +208,12 @@ class BeehiveServiceProcessor(
     val dataType =
       fn.returnType!!
         .resolve()
-        .arguments.first()
+        .arguments
+        .first()
         .type!!
         .resolve()
-        .arguments.first()
+        .arguments
+        .first()
         .type!!
         .toTypeName()
     val returnType = fn.returnType!!.toTypeName()
@@ -227,12 +228,7 @@ class BeehiveServiceProcessor(
       beginControlFlow("%M", FLOW_FN)
       beginControlFlow("for (frame in session.incoming)")
       beginControlFlow("if (frame is %T.Text)", FRAME)
-      addStatement(
-        "emit(%T.decodeFromString<%T>(frame.%M()))",
-        JSON,
-        dataType,
-        FRAME_READ_TEXT,
-      )
+      addStatement("emit(%T.decodeFromString<%T>(frame.%M()))", JSON, dataType, FRAME_READ_TEXT)
       endControlFlow()
       endControlFlow()
       endControlFlow()
@@ -327,10 +323,12 @@ class BeehiveServiceProcessor(
     val dataType =
       fn.returnType!!
         .resolve()
-        .arguments.first()
+        .arguments
+        .first()
         .type!!
         .resolve()
-        .arguments.first()
+        .arguments
+        .first()
         .type!!
         .toTypeName()
 
@@ -396,13 +394,17 @@ class BeehiveServiceProcessor(
       return true
     }
     if (returnsEmptyResponse()) {
-      logger.error("@WS function '$name' must return NetworkResponse<Flow<T>>, not EmptyResponse", this)
+      logger.error(
+        "@WS function '$name' must return NetworkResponse<Flow<T>>, not EmptyResponse",
+        this,
+      )
       return true
     }
     val innerFqn =
       returnType!!
         .resolve()
-        .arguments.firstOrNull()
+        .arguments
+        .firstOrNull()
         ?.type
         ?.resolve()
         ?.declaration

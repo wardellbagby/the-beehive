@@ -44,8 +44,7 @@ class HomeScreen(
   val onMusicFilterClicked: () -> Unit,
   val onLogsClicked: () -> Unit,
   val onPhotoDisplayClicked: () -> Unit,
-) :
-  ComposeScreen {
+) : ComposeScreen {
   @OptIn(ExperimentalMaterial3Api::class)
   @Composable
   override fun Content() {

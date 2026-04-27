@@ -37,11 +37,12 @@ class UpdatePhotosPresenter @Inject constructor(private val service: BeehiveServ
     }
 
     return FullModalOverlay(
-      content = UpdatePhotosScreen(
-        logs = logs,
-        isFinished = isFinished,
-        onDismiss = { onOutput(Output.Dismissed) },
-      ),
+      content =
+        UpdatePhotosScreen(
+          logs = logs,
+          isFinished = isFinished,
+          onDismiss = { onOutput(Output.Dismissed) },
+        ),
       onDismiss = { onOutput(Output.Dismissed) },
     )
   }
