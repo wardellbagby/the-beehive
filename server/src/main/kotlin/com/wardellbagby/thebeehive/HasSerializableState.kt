@@ -16,11 +16,14 @@ interface HasSerializableState {
 context(container: Any)
 inline fun <reified T> HasSerializableState.savableState(initial: T) =
   object : ReadWriteProperty<HasSerializableState, T> {
-    var lastSeenState: T? = null
+    private var lastSeenState: T = initial
+    // Seems odd but lets T be nullable without needing to create a sentinel value to represent
+    // lastSeenState having not been set yet.
+    private var hasBeenSet = false
 
     override fun getValue(thisRef: HasSerializableState, property: KProperty<*>): T {
-      if (lastSeenState != null) {
-        return lastSeenState!!
+      if (hasBeenSet) {
+        return lastSeenState
       }
 
       if (property.path().exists()) {
@@ -41,6 +44,7 @@ inline fun <reified T> HasSerializableState.savableState(initial: T) =
 
     override fun setValue(thisRef: HasSerializableState, property: KProperty<*>, value: T) {
       lastSeenState = value
+      hasBeenSet = true
       property.path().writeText(Json.encodeToString(value))
     }
 

@@ -6,8 +6,11 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
+import com.wardellbagby.thebeehive.Filesystem
+import com.wardellbagby.thebeehive.HasSerializableState
 import com.wardellbagby.thebeehive.ServerConfig
 import com.wardellbagby.thebeehive.getLogger
+import com.wardellbagby.thebeehive.savableState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
@@ -19,8 +22,11 @@ import kotlinx.coroutines.withContext
 
 @SingleIn(AppScope::class)
 @Inject
-class PushNotifications(config: ServerConfig, private val repo: NotificationRepository) {
+class PushNotifications(config: ServerConfig, override val filesystem: Filesystem) :
+  HasSerializableState {
   private val logger = getLogger()
+
+  var latestFcmToken: String? by savableState(null)
 
   init {
     val credentials =
@@ -33,27 +39,21 @@ class PushNotifications(config: ServerConfig, private val repo: NotificationRepo
   }
 
   suspend fun send(title: String = "Beehive", body: String) {
-    val tokens = repo.getTokens()
-    if (tokens.isEmpty()) return
+    if (latestFcmToken == null) {
+      logger.warn("No FCM token has been set and a push tried to send!")
+      return
+    }
 
-    val messages = tokens.map { token ->
+    val message =
       Message.builder()
         .setNotification(Notification.builder().setTitle(title).setBody(body).build())
-        .setToken(token)
+        .setToken(latestFcmToken)
         .build()
-    }
 
     withContext(Dispatchers.IO) {
       try {
-        val response = FirebaseMessaging.getInstance().sendEach(messages)
-        logger.debug(
-          "FCM sent: ${response.successCount} success, ${response.failureCount} failures"
-        )
-        response.responses.forEachIndexed { i, r ->
-          if (!r.isSuccessful) {
-            logger.warn("FCM failure for token ${tokens[i]}: ${r.exception?.message}")
-          }
-        }
+        FirebaseMessaging.getInstance().send(message)
+        logger.debug("FCM sent")
       } catch (e: Exception) {
         logger.error("FCM send failed: ${e.message}", e)
       }

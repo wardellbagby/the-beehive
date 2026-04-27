@@ -3,8 +3,8 @@ package com.wardellbagby.thebeehive.notifications
 import dev.zacsweers.metro.Inject
 
 @Inject
-class NotificationRouteHandler(private val repo: NotificationRepository) {
+class NotificationRouteHandler(private val pushNotifications: PushNotifications) {
   fun registerToken(request: RegisterTokenRequest) {
-    repo.addToken(request.token)
+    pushNotifications.latestFcmToken = request.token
   }
 }

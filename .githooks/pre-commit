@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-STAGED=$(git diff --cached --name-only)
+STAGED=$(git diff --cached --name-only --diff-filter=d)
 ./gradlew ktfmtFormat
 if [ -n "$STAGED" ]; then
   echo "$STAGED" | xargs git add
