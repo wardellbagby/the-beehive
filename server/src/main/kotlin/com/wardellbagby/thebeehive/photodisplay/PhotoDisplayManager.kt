@@ -21,7 +21,6 @@ import kotlin.io.path.name
 import kotlin.io.path.readText
 import kotlin.streams.asSequence
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -104,7 +103,7 @@ class PhotoDisplayManager(
         logger.info("Found Tuneshine at $host")
         return apiFactory.create(host).also { tuneshineApi = it }
       }
-      delay(1.minutes)
+      delay(20.seconds)
     }
   }
 
@@ -130,7 +129,7 @@ class PhotoDisplayManager(
       .firstNotNullOfOrNull { discoverTuneshine(bindAddress = it) }
 
   private suspend fun discoverTuneshine(bindAddress: InetAddress): String? =
-    withTimeoutOrNull(10_000L) {
+    withTimeoutOrNull(5.seconds) {
         withContext(Dispatchers.IO) {
           suspendCancellableCoroutine { cont ->
             val jmdns = JmDNS.create(bindAddress)
