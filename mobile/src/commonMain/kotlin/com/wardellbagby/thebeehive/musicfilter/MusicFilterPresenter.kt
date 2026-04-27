@@ -24,9 +24,8 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MusicFilterPresenter
 @Inject
-constructor(
+class MusicFilterPresenter(
   private val service: BeehiveServiceClient,
   private val settingsPresenter: MusicFilterSettingsPresenter,
 ) : ScreenPresenter<Unit, MusicFilterPresenter.Output, UiStack>() {

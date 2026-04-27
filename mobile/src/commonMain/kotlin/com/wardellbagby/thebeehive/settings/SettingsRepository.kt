@@ -6,7 +6,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
-class SettingsRepository @Inject constructor() {
+@Inject
+class SettingsRepository {
   private companion object {
     private const val HOSTNAME_KEY = "hostname"
 

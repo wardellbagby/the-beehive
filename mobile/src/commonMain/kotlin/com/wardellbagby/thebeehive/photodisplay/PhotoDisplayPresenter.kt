@@ -16,9 +16,8 @@ import dev.zacsweers.metro.Inject
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 
-class PhotoDisplayPresenter
 @Inject
-constructor(
+class PhotoDisplayPresenter(
   private val service: BeehiveService,
   private val updatePhotosPresenter: UpdatePhotosPresenter,
 ) : ScreenPresenter<Unit, PhotoDisplayPresenter.Output, UiStack>() {

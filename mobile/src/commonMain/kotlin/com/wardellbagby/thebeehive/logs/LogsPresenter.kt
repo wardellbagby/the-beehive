@@ -18,7 +18,8 @@ import com.wardellbagby.thebeehive.status.LogMessage
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.onCompletion
 
-class LogsPresenter @Inject constructor(private val service: BeehiveService) :
+@Inject
+class LogsPresenter(private val service: BeehiveService) :
   ScreenPresenter<Unit, LogsPresenter.Output, UiStack>() {
 
   sealed interface Output {

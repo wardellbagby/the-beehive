@@ -45,4 +45,6 @@ dependencies {
 
 val compileKotlin: KotlinCompile by tasks
 
-compileKotlin.compilerOptions { freeCompilerArgs.set(listOf("-Xcontext-parameters")) }
+compileKotlin.compilerOptions {
+  freeCompilerArgs.set(listOf("-Xcontext-parameters", "-Xexpect-actual-classes"))
+}

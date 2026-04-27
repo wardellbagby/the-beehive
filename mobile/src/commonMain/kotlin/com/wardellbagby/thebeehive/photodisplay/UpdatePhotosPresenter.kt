@@ -17,7 +17,8 @@ import com.wardellbagby.thebeehive.status.LogMessage
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.onCompletion
 
-class UpdatePhotosPresenter @Inject constructor(private val service: BeehiveService) :
+@Inject
+class UpdatePhotosPresenter(private val service: BeehiveService) :
   ScreenPresenter<Unit, UpdatePhotosPresenter.Output, ComposeOverlay>() {
 
   sealed interface Output {

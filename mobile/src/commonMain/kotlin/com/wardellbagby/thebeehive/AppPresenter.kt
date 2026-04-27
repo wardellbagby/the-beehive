@@ -23,9 +23,8 @@ import kotlin.time.Duration.Companion.minutes
 import kotlinx.coroutines.delay
 
 @SingleIn(AppScope::class)
-class AppPresenter
 @Inject
-constructor(
+class AppPresenter(
   private val homePresenter: Provider<HomePresenter>,
   private val initialLaunchPresenter: InitialLaunchPresenter,
   private val settingsRepository: SettingsRepository,

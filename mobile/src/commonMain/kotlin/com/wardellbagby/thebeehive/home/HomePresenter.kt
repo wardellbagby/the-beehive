@@ -19,9 +19,8 @@ import com.wardellbagby.thebeehive.photodisplay.PhotoDisplayPresenter
 import com.wardellbagby.thebeehive.service.BeehiveServiceClient
 import dev.zacsweers.metro.Inject
 
-class HomePresenter
 @Inject
-constructor(
+class HomePresenter(
   private val musicFilterPresenter: MusicFilterPresenter,
   private val logsPresenter: LogsPresenter,
   private val photoDisplayPresenter: PhotoDisplayPresenter,
