@@ -1,5 +1,7 @@
 package com.wardellbagby.thebeehive.musicfilter
 
+import com.wardellbagby.thebeehive.Filesystem
+import com.wardellbagby.thebeehive.HasSerializableState
 import com.wardellbagby.thebeehive.getLogger
 import com.wardellbagby.thebeehive.musicfilter.MusicFilterManager.TrackAction.AllowPlay
 import com.wardellbagby.thebeehive.musicfilter.MusicFilterManager.TrackAction.Skip
@@ -7,6 +9,7 @@ import com.wardellbagby.thebeehive.musicfilter.MusicFilterManager.TrackAction.Te
 import com.wardellbagby.thebeehive.musicfilter.data.BannedTrackPlay
 import com.wardellbagby.thebeehive.musicfilter.data.spotify.SpotifyTrack
 import com.wardellbagby.thebeehive.musicfilter.data.spotifyId
+import com.wardellbagby.thebeehive.savableState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
@@ -20,7 +23,8 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 @SingleIn(AppScope::class)
 @Inject
-class MusicFilterManager(private val clock: Clock) {
+class MusicFilterManager(private val clock: Clock, override val filesystem: Filesystem) :
+  HasSerializableState {
   sealed interface TrackAction {
     data object AllowPlay : TrackAction
 
@@ -33,9 +37,10 @@ class MusicFilterManager(private val clock: Clock) {
   private val bannedTracksThatPlayed = mutableListOf<BannedTrackPlay>()
   private var lastSeenPlayingTrack: SpotifyTrack? = null
   private var lastSeenPlayingTrackCount = 0
-  var maxPlaysAllowed = 3
-  var slidingWindow: Duration = 6.hours
-  var bannedArtistNames: List<String> = listOf("Drake", "Kanye West")
+
+  var maxPlaysAllowed by savableState(3)
+  var slidingWindow: Duration by savableState(6.hours)
+  var bannedArtistNames: List<String> by savableState(listOf())
 
   val bannedTracks: List<BannedTrackPlay>
     get() = bannedTracksThatPlayed.toList()

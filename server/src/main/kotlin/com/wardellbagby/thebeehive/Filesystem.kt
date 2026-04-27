@@ -5,6 +5,7 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.reflect.KClass
 
 interface Filesystem {
   fun getRootDirectory(): Path
@@ -22,14 +23,18 @@ class FilesystemImpl : Filesystem {
   }
 }
 
-context(job: Job)
+context(containing: Any)
 fun Filesystem.workingDirectory(): Path {
-  return getRootDirectory()
-    .resolve(job::class.simpleName ?: error("Can't use anonymous jobs!"))
-    .also { Files.createDirectories(it) }
+  return workingDirectory(forClass = containing::class)
 }
 
-inline fun <reified T : OneShot> Filesystem.workingDirectory(): Path =
-  getRootDirectory().resolve(T::class.simpleName ?: error("Can't use anonymous one-shots!")).also {
-    Files.createDirectories(it)
-  }
+fun Filesystem.workingDirectory(forClass: KClass<*>): Path {
+  val key: String =
+    if (forClass.isCompanion) {
+      forClass.java.declaringClass.simpleName
+    } else {
+      forClass.simpleName
+    } ?: error("Can't get a working directory inside of a non-class!")
+
+  return getRootDirectory().resolve(key).also { Files.createDirectories(it) }
+}

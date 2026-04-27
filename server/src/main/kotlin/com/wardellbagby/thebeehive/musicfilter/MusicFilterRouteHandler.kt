@@ -34,7 +34,9 @@ class MusicFilterRouteHandler(
   ): MusicFilterStatusResponse {
     with(request) {
       maxPlaysAllowed?.let { manager.maxPlaysAllowed = it }
-      bannedArtistNames?.let { manager.bannedArtistNames = it }
+      bannedArtistNames?.let { newNames ->
+        manager.bannedArtistNames = newNames.map { it.trim() }.filter { it.isNotBlank() }
+      }
       slidingWindow?.let { manager.slidingWindow = it }
     }
 

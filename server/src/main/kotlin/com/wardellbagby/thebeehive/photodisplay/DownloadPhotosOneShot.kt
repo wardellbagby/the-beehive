@@ -26,7 +26,7 @@ import org.slf4j.Logger
 class DownloadPhotosOneShot(filesystem: Filesystem) : OneShot {
   companion object {
     fun imagesDirectory(filesystem: Filesystem): Path =
-      filesystem.workingDirectory<DownloadPhotosOneShot>().resolve("images")
+      filesystem.workingDirectory().resolve("images")
   }
 
   private val imagesDirectory = imagesDirectory(filesystem)
