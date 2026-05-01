@@ -1,7 +1,7 @@
 {
   "name": "@wardellbagby/homebridge-beehive-plugin",
   "type": "commonjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Wardell Bagby",
   "files": ["build/dist/js/productionLibrary"],
   "license": "GPL-3.0-or-later",
