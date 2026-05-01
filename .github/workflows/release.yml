@@ -73,6 +73,7 @@ jobs:
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm@latest
       - run: ./gradlew :homebridgePlugin:dist
       - name: Publish to NPM
         working-directory: homebridgePlugin

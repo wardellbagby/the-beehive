@@ -3,9 +3,14 @@
   "type": "commonjs",
   "version": "0.0.2",
   "author": "Wardell Bagby",
-  "files": ["build/dist/js/productionLibrary"],
+  "files": [
+    "build/dist/js/productionLibrary",
+    "config.schema.json"
+  ],
   "license": "GPL-3.0-or-later",
-  "keywords": ["homebridge-plugin"],
+  "keywords": [
+    "homebridge-plugin"
+  ],
   "main": "build/dist/js/productionLibrary/TheBeehiveApp-homebridgePlugin.mjs",
   "engines": {
     "node": "^20.18.0 || ^22.10.0 || ^24.0.0",
