@@ -71,9 +71,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '25'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install -g npm@latest
       - run: ./gradlew :homebridgePlugin:dist
       - name: Publish to NPM
         working-directory: homebridgePlugin
