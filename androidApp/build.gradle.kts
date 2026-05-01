@@ -11,8 +11,8 @@ android {
     applicationId = "com.wardellbagby.thebeehive"
     minSdk = libs.versions.android.minSdk.get().toInt()
     targetSdk = libs.versions.android.targetSdk.get().toInt()
-    versionCode = 4
-    versionName = "0.0.3"
+    versionCode = 5
+    versionName = "0.0.4"
   }
   packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
   buildTypes { getByName("release") { isMinifyEnabled = false } }

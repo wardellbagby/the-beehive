@@ -10,7 +10,7 @@ plugins {
 
 group = "com.wardellbagby.thebeehive"
 
-version = "0.0.3"
+version = "0.0.4"
 
 application {
   mainClass.set("com.wardellbagby.thebeehive.ApplicationKt")
