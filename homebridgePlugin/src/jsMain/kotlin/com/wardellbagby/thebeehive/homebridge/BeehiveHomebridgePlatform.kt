@@ -10,6 +10,7 @@ import com.wardellbagby.thebeehive.homebridge.externals.PlatformAccessory
 import com.wardellbagby.thebeehive.service.BeehiveServiceClient
 import com.wardellbagby.thebeehive.service.onFailure
 import com.wardellbagby.thebeehive.service.onSuccess
+import io.ktor.http.Url
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -21,7 +22,10 @@ class BeehiveHomebridgePlatform(val log: Logging, config: dynamic, val api: API)
   val Characteristic: dynamic = api.hap.Characteristic
   val hostname: String = config.hostname as String
   internal val beehiveService =
-    BeehiveServiceClient(client = createDefaultHttpClient(createDefaultJson()), baseUrl = hostname)
+    BeehiveServiceClient(
+      client = createDefaultHttpClient(createDefaultJson()),
+      baseUrl = Url(hostname),
+    )
   internal val accessories: MutableMap<String, PlatformAccessory> = mutableMapOf()
 
   init {
